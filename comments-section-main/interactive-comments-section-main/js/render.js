@@ -1,4 +1,13 @@
-console.log(data)
+const loadJSON = async (path) => {
+    const response = await fetch(path)
+    data = await response.json()
+
+    console.log(data)
+    loadComments()
+    document.querySelector("#newComment img").src = data.currentUser.image.webp
+}
+let data
+loadJSON('data.json')
 
 renderReplyForm = (element, btn='reply') => {
     const id = element.closest('ul').getAttribute('commentId')
@@ -68,8 +77,8 @@ renderNewComment = comment => {
     const divWithAction = document.createElement("div")
     divWithAction.classList.add("action")
     divWithAction.innerHTML = isCurrentUser(comment.user.username) ?
-        `<a href="#" class="delete" commentId="${comment.id}" onClick="delComment(this)">Delete</a> <a href="#" class="edit" commentId="${comment.id}" onClick="editComment(this)">Edit</a>` : 
-        `<a href="#" class="reply" commentId="${comment.id}" onClick="renderReplyForm(this)">Reply</a>`
+        `<a href="#" class="delete" commentId="${comment.id}" onClick="delComment(this)"><img src='images/icon-delete.svg'/>Delete</a> <a href="#" class="edit" commentId="${comment.id}" onClick="editComment(this)"><img src='images/icon-edit.svg'/>Edit</a>` : 
+        `<a href="#" class="reply" commentId="${comment.id}" onClick="renderReplyForm(this)"><img src='images/icon-reply.svg'/>Reply</a>`
     article.appendChild(divWithAction)
 
     const divWithComment = document.createElement("div")
@@ -93,8 +102,6 @@ loadComments = () => {
     ol.innerHTML = ''
     data.comments.forEach(comment => ol.appendChild(renderNewComment(comment)))
 }
-loadComments()
-document.querySelector("#newComment img").src = data.currentUser.image.webp
 
 saveNewComment = (domForm, reply=0) => {
     const form = Object.fromEntries(new FormData(domForm))
